@@ -89,6 +89,9 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
+if "active_difficulty" not in st.session_state:
+    st.session_state.active_difficulty = difficulty
+
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
@@ -106,6 +109,14 @@ if "history" not in st.session_state:
 
 if "game_id" not in st.session_state:
     st.session_state.game_id = 0
+
+if st.session_state.active_difficulty != difficulty:
+    st.session_state.active_difficulty = difficulty
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.attempts = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
+    st.session_state.game_id += 1
 
 st.subheader("Make a guess")
 

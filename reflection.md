@@ -50,8 +50,16 @@ yes I asked the AI to implement input validation for the game, and it suggested 
 ## 4. What did you learn about Streamlit and state?
 
 - In your own words, explain why the secret number kept changing in the original app.
+
+The secret number kept changing because Streamlit reruns the whole script whenever  interacts with the app. Since the secret number was being generated without properly controlling when it should be created or preserved, a new random number could be produced on reruns or when game settings changed, which made the game behave unpredictably.
+
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
+
+Streamlit reruns mean the app runs the Python script from top to bottom every time the user does something like clicking a button or typing input. Session state is like temporary memory for the app that keeps variables stored across reruns so important information, like the score or secret number, does not reset while playing.
+
 - What change did you make that finally gave the game a stable secret number?
+
+I stored the secret number inside st.session_state.secret and made sure it is only regenerated when starting a new game or when the difficulty level changes. This keeps the secret number constant during gameplay instead of creating a new one on every rerun.
 
 ---
 
