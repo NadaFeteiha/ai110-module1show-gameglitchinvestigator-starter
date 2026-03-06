@@ -104,6 +104,9 @@ if "status" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
+if "game_id" not in st.session_state:
+    st.session_state.game_id = 0
+
 st.subheader("Make a guess")
 
 st.info(
@@ -115,7 +118,7 @@ debug_slot = st.empty()
 
 raw_guess = st.text_input(
     "Enter your guess:",
-    key=f"guess_input_{difficulty}"
+    key=f"guess_input_{difficulty}_{st.session_state.game_id}"
 )
 
 col1, col2, col3 = st.columns(3)
@@ -131,6 +134,7 @@ if new_game:
     st.session_state.secret = random.randint(low, high)
     st.session_state.status = "playing"
     st.session_state.history = []
+    st.session_state.game_id += 1
     st.success("New game started.")
     st.rerun()
 
@@ -155,6 +159,8 @@ if submit:
 
     if not ok:
         st.error(err)
+    elif guess_int is None or guess_int < low or guess_int > high:
+        st.error(f"Please enter a number between {low} and {high}.")
     else:
         st.session_state.attempts += 1
         st.session_state.history.append(guess_int)
