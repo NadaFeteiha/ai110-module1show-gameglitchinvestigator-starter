@@ -93,7 +93,7 @@ if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -111,12 +111,7 @@ st.info(
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
-with st.expander("Developer Debug Info"):
-    st.write("Secret:", st.session_state.secret)
-    st.write("Attempts:", st.session_state.attempts)
-    st.write("Score:", st.session_state.score)
-    st.write("Difficulty:", difficulty)
-    st.write("History:", st.session_state.history)
+debug_slot = st.empty()
 
 raw_guess = st.text_input(
     "Enter your guess:",
@@ -142,17 +137,24 @@ if st.session_state.status != "playing":
         st.success("You already won. Start a new game to play again.")
     else:
         st.error("Game over. Start a new game to try again.")
+
+    with debug_slot.container():
+        with st.expander("Developer Debug Info"):
+            st.write("Secret:", st.session_state.secret)
+            st.write("Attempts:", st.session_state.attempts)
+            st.write("Score:", st.session_state.score)
+            st.write("Difficulty:", difficulty)
+            st.write("History:", st.session_state.history)
+
     st.stop()
 
 if submit:
-    st.session_state.attempts += 1
-
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
-        st.session_state.history.append(raw_guess)
         st.error(err)
     else:
+        st.session_state.attempts += 1
         st.session_state.history.append(guess_int)
 
         if st.session_state.attempts % 2 == 0:
@@ -187,5 +189,12 @@ if submit:
                     f"Score: {st.session_state.score}"
                 )
 
-st.divider()
+with debug_slot.container():
+    with st.expander("Developer Debug Info"):
+        st.write("Secret:", st.session_state.secret)
+        st.write("Attempts:", st.session_state.attempts)
+        st.write("Score:", st.session_state.score)
+        st.write("Difficulty:", difficulty)
+        st.write("History:", st.session_state.history)
+
 st.caption("Built by an AI that claims this code is production-ready.")
